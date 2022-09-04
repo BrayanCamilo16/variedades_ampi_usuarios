@@ -7,18 +7,15 @@
 <html>
     <head>
         <title>VariedadesAmpi|Administrador</title>
-
+        <jsp:include page="/WEB-INF/paginas/comunes/head.jsp" />
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="../js/funciones.js" type="text/javascript"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-
-
-        <!--datatable-->
-        <link href="DataTables/datatables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="DataTables/DataTables-1.12.1/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-
-        <jsp:include page="/WEB-INF/paginas/comunes/head.jsp" />
+        <!-- DATATABLES -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+        <!-- BOOTSTRAP -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+        <link href="../css/StyleAdmin.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
 
@@ -37,141 +34,160 @@
                 </div>
             </div>
         </section>
-<h1>Bienvenido</h1>
-        <div class="ms-auto">
-                <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-self-auto">
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-secondary text-white me-1" href="" data-bs-toggle="modal" data-bs-target="#signup"><i class="fas fa-user-plus me-1"></i></i>Crear usuario</a>
-                    </li>
-                </ul>
+        <a href="" data-bs-toggle="modal" data-bs-target="#Create"><i class="fas fa-user-plus me-1"></i>Crear usuario</a>
+
+
+        <div class="outer-wrapper">
+            <div class="table-wrapper">
+                <table id="usuario" class="tala">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Contraseña</th>
+                            <th>Tipo Documento</th>
+                            <th>Numero Documento</th>
+                            <th>Estado</th>
+                            <th>Telefono</th>
+                            <th>Direccion</th>
+                            <th>Sexo</th>
+                            <th>Rol/Cargo</th>
+
+                            <th colspan="3">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot> 
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Contraseña</th>
+                            <th>Tipo Documento</th>
+                            <th>Numero Documento</th>
+                            <th>Estado</th>
+                            <th>Telefono</th>
+                            <th>Direccion</th>
+                            <th>Sexo</th>
+                            <th>Rol/Cargo</th>
+
+                            <th colspan="3">Acciones</th>
+                        </tr>
+                    </tfoot>
+                    <%UsuarioDAO usuDAO = new UsuarioDAO();
+                        ArrayList<UsuarioVO> listarUsuarios = usuDAO.listar();
+                        request.setAttribute("lista", listarUsuarios);
+                    %>
+
+                    <c:forEach items="${lista}" var="u">
+                        <tbody>
+                            <tr>
+                                <td>${u.getIdUsuario()}</td>
+                                <td>${u.getNombreUsuario()}</td>
+                                <td>${u.getApellidoUsuario()}</td>
+                                <td>${u.getEmailUsuario()}</td>
+                                <td>${u.getPassUsuario()}</td>
+                                <td>${u.getTipoDocumento()}</td>
+                                <td>${u.getNumDocumentoUsuario()}</td>
+
+                                <td>
+                                    <c:if test="${u.isEstadoUsuario() == true}">
+                                        <button class="btn btn-success rounded-pill">${u.isEstadoUsuario()}</button>
+                                    </c:if>
+                                    <c:if test="${u.isEstadoUsuario() == false}">
+                                        <button class="btn btn-danger rounded-pill">${u.isEstadoUsuario()}</button>
+                                    </c:if>
+                                </td>
+                                <td>${u.getTelefonoUsuario()}</td>
+                                <td>${u.getDireccionUsuario()}</td>
+                                <td>${u.getSexoUsuario()}</td>
+                                <td>${u.getIdRol()}</td>
+                                <td>
+                                    <form action="${pageContext.request.contextPath}/Usuario"  method="POST" >
+                                        <input type="hidden" name="codigoId" value="${u.getIdUsuario()}">
+                                        <a href="" data-bs-toggle="modal" data-bs-target="#Update"><button type="submit"><i class="fa-square-pen"></i></button></a>
+                                        <input type="hidden" name="action" value="4">
+                                    </form>
+                                </td>
+                                <c:if test="${u.isEstadoUsuario() == true}">
+                                    <td>
+                                        <input type="hidden" name="codigoId" value="${u.getIdUsuario()}">
+                                        <button onclick="alertaInactivar(${u.getIdUsuario()}, true)"><i class="bi bi-person-check-fill fa-x5 text-success" style="font-size: 50px;"></i></button>
+                                    </td>
+                                </c:if>
+
+
+                                <c:if test="${u.isEstadoUsuario() == false}">
+                                    <td>
+                                        <input type="hidden" name="codigoId" value="${u.getIdUsuario()}">
+                                        <button onclick="alertaActivar(${u.getIdUsuario()}, false)"><i class="bi bi-person-x-fill fa-x5 text-danger" style="font-size: 50px;"></i></button>
+                                    </td>
+                                </c:if>
+                            </tr>
+                        </tbody>
+                    </c:forEach>
+                </table>
             </div>
+        </div>
+                            <!-- JQUERY -->
+        <script src="https://code.jquery.com/jquery-3.4.1.js"
+                integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
+        </script>
+        <!-- DATATABLES -->
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
+        </script>
+        <!-- BOOTSTRAP -->
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#usuario').DataTable({
+                    language: {
+                        processing: "Tratamiento en curso...",
+                        search: "Buscar&nbsp;:",
+                        lengthMenu: "Agrupar de _MENU_ items",
+                        info: "Mostrando del item _START_ al _END_ de un total de _TOTAL_ items",
+                        infoEmpty: "No existen datos.",
+                        infoFiltered: "(filtrado de _MAX_ elementos en total)",
+                        infoPostFix: "",
+                        loadingRecords: "Cargando...",
+                        zeroRecords: "No se encontraron datos con tu busqueda",
+                        emptyTable: "No hay datos disponibles en la tabla.",
+                        paginate: {
+                            first: "Primero",
+                            previous: "Anterior",
+                            next: "Siguiente",
+                            last: "Ultimo"
+                        },
+                        aria: {
+                            sortAscending: ": active para ordenar la columna en orden ascendente",
+                            sortDescending: ": active para ordenar la columna en orden descendente"
+                        }
+                    },
+                    scrollY: 400,
+                    lengthMenu: [[10, 25, -1], [10, 25, "All"]],
+                });
+            });
+        </script>
+        <%//cuando es diferente a nulo es que si hubo un error
+            if (request.getAttribute("titleerror") != null) {%>
+        ${titleerror}
+        <%} else {%>
+        ${titleexito}
+        <%}%>
+        <script src="https://kit.fontawesome.com/bdbed0aafa.js" crossorigin="anonymous"></script>
+        <!-- footer  -->
+        <jsp:include page="/WEB-INF/paginas/comunes/footer.jsp" />
+        <!-- /footer  -->
 
-<table id="datatable" class="table table-sm table-dark" style="width:100%">
-    <thead>
-        <tr class="table-primary">
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Contraseña</th>
-            <th>Tipo Documento</th>
-            <th>Numero Documento</th>
-            <th>Estado</th>
-            <th>Telefono</th>
-            <th>Direccion</th>
-            <th>Sexo</th>
-            <th>Rol/Cargo</th>
-
-            <th colspan="3">Acciones</th>
-        </tr>
-    </thead>
-
-    <tfoot> 
-        <tr class="table-primary">
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Contraseña</th>
-            <th>Tipo Documento</th>
-            <th>Numero Documento</th>
-            <th>Estado</th>
-            <th>Telefono</th>
-            <th>Direccion</th>
-            <th>Sexo</th>
-            <th>Rol/Cargo</th>
-
-            <th colspan="3">Acciones</th>
-        </tr>
-    </tfoot>
-    <%UsuarioDAO usuDAO = new UsuarioDAO();
-        ArrayList<UsuarioVO> listarUsuarios = usuDAO.listar();
-        request.setAttribute("lista", listarUsuarios);
-    %>
-
-    <c:forEach items="${lista}" var="u">
-        <tbody>
-            <tr>
-                <td>${u.getIdUsuario()}</td>
-                <td>${u.getNombreUsuario()}</td>
-                <td>${u.getApellidoUsuario()}</td>
-                <td>${u.getEmailUsuario()}</td>
-                <td>${u.getPassUsuario()}</td>
-                <td>${u.getTipoDocumento()}</td>
-                <td>${u.getNumDocumentoUsuario()}</td>
-
-                <td>
-                    <c:if test="${u.isEstadoUsuario() == true}">
-                        <button class="btn btn-success rounded-pill">${u.isEstadoUsuario()}</button>
-                    </c:if>
-                    <c:if test="${u.isEstadoUsuario() == false}">
-                        <button class="btn btn-danger rounded-pill">${u.isEstadoUsuario()}</button>
-                    </c:if>
-                </td>
-                <td>${u.getTelefonoUsuario()}</td>
-                <td>${u.getDireccionUsuario()}</td>
-                <td>${u.getSexoUsuario()}</td>
-                <% //if(request.getParameter("estado").equals(true))%>
-                <td>${u.getIdRol()}</td>
-                <td>
-                    <form action="${pageContext.request.contextPath}/Usuario"  method="POST" >
-                        <input type="hidden" name="codigoId" value="${u.getIdUsuario()}">
-                        <a><button type="submit" class="btn btn-secondary">Editar</button></a>
-                        <input type="hidden" name="action" value="4">
-                    </form>
-                </td>
-                <c:if test="${u.isEstadoUsuario() == true}">
-                    <td>
-                        <input type="hidden" name="codigoId" value="${u.getIdUsuario()}">
-                        <button onclick="alertaInactivar(${u.getIdUsuario()}, true)"><i class="bi bi-person-check-fill fa-x5 text-success" style="font-size: 50px;"></i></button>
-                    </td>
-                </c:if>
-
-
-                <c:if test="${u.isEstadoUsuario() == false}">
-                    <td>
-                        <input type="hidden" name="codigoId" value="${u.getIdUsuario()}">
-                        <button onclick="alertaActivar(${u.getIdUsuario()}, false)"><i class="bi bi-person-x-fill fa-x5 text-danger" style="font-size: 50px;"></i></button>
-                    </td>
-                </c:if>
-            </tr>
-        </tbody>
-    </c:forEach>
-</table>
-<%//cuando es diferente a nulo es que si hubo un error
-    if (request.getAttribute("titleerror") != null) {%>
-${titleerror}
-<%} else {%>
-${titleexito}
-<%}%>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>        
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-
-
-
-<script src="DataTables/datatables.min.js" type="text/javascript"></script>
-<script src="DataTables/DataTables-1.12.1/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
-<script src="DataTables/jquery.min.js" type="text/javascript"></script>
-<script src="js/main.js" type="text/javascript"></script>
-
-<script src="https://kit.fontawesome.com/bdbed0aafa.js" crossorigin="anonymous"></script>
-<!-- footer  -->
-<jsp:include page="/WEB-INF/paginas/comunes/footer.jsp" />
-<!-- /footer  -->
-
-<!-- File js  -->
-<jsp:include page="/WEB-INF/paginas/comunes/archivos-js.jsp" />
-<!-- /File js  -->
-
-<jsp:include page="/WEB-INF/paginas/comunes/alerta-modal.jsp" />
-</body>
-<script>
-                            $(document).ready(function () {
-                                $('datatable').DataTable();
-                            });
-
-</script>
+        <!-- File js  -->
+        <jsp:include page="/WEB-INF/paginas/comunes/archivos-js.jsp" />
+        <!-- /File js  -->
+        <jsp:include page="/WEB-INF/paginas/comunes/alerta-modal.jsp" />
+        <jsp:include page="CreateUser.jsp" />
+        <jsp:include page="updateUser.jsp" />
+    </body>
 </html>

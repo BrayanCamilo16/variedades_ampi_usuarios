@@ -33,17 +33,17 @@ public class UsuarioControlador extends HttpServlet {
                 request.setAttribute("titleexito", "Usuario Inactivado Correctamente");
                 request.getRequestDispatcher("admin/index.jsp").forward(request, response);
             } else {
-                    request.setAttribute("titleerror", "El usuario no se pudo Inactivar");
-                    request.getRequestDispatcher("admin/index.jsp").forward(request, response);
+                request.setAttribute("titleerror", "El usuario no se pudo Inactivar");
+                request.getRequestDispatcher("admin/index.jsp").forward(request, response);
             }
         } else {
             if (UsuaDAO.Activar()) {
-                    request.setAttribute("titleexito", "Usuario Activado Correctamente");
-                    request.getRequestDispatcher("admin/index.jsp").forward(request, response);
-                } else {
-                    request.setAttribute("titleerror", "El usuario no se pudo Activar");
-                    request.getRequestDispatcher("admin/index.jsp").forward(request, response);
-                }
+                request.setAttribute("titleexito", "Usuario Activado Correctamente");
+                request.getRequestDispatcher("admin/index.jsp").forward(request, response);
+            } else {
+                request.setAttribute("titleerror", "El usuario no se pudo Activar");
+                request.getRequestDispatcher("admin/index.jsp").forward(request, response);
+            }
 
         }
 
@@ -136,47 +136,27 @@ public class UsuarioControlador extends HttpServlet {
 
                 if (!request.getParameter("codigoId").equals("")
                         && !request.getParameter("rol").equals("")) {
-
-//                    usuaVO.setIdUsuario(Integer.parseInt(request.getParameter("codigoId")));
-//                    usuaVO.setNombreUsuario(request.getParameter("nombre"));
-//                    usuaVO.setApellidoUsuario(request.getParameter("apellido"));
-//                    usuaVO.setEmailUsuario(request.getParameter("email"));
-//                    usuaVO.setPassUsuario(request.getParameter("pass"));
-//                    usuaVO.setNumDocumentoUsuario(request.getParameter("numDocu"));
-//                    usuaVO.setTelefonoUsuario(request.getParameter("telefono"));
-//                    usuaVO.setDireccionUsuario(request.getParameter("direccion"));
-//                    usuaVO.setSexoUsuario(request.getParameter("sexo"));
-                    usuaVO = new UsuarioVO(Integer.parseInt(request.getParameter("codigoId")), request.getParameter("email"), request.getParameter("pass"), request.getParameter("nombre"), request.getParameter("apellido"),
+                    usuaVO = new UsuarioVO(Integer.parseInt(request.getParameter("codigoId")),
+                            request.getParameter("email"), request.getParameter("pass"),
+                            request.getParameter("nombre"), request.getParameter("apellido"),
                             request.getParameter("numDocu"), request.getParameter("telefono"),
-                            request.getParameter("direccion"), request.getParameter("sexo"), true, request.getParameter("rol"), request.getParameter("tipoDocu"));
-//                    if (request.getParameter("estado") != null) {
-//                        usuaVO.setEstadoUsuario(true);
-//                    } else {
-//                        usuaVO.setEstadoUsuario(false);
-//                    }
-//                    usuaVO.setTipoDocumento(request.getParameter("tipoDocu"));
-//                    usuaVO.setIdRol(Integer.parseInt(request.getParameter("rol")));
+                            request.getParameter("direccion"), request.getParameter("sexo"), true,
+                            request.getParameter("rol"), request.getParameter("tipoDocu"));
 
                     HttpSession sessioon = request.getSession();
                     UsuarioVO usuaaaVO = (UsuarioVO) sessioon.getAttribute("usuarioVo");
                     UsuarioDAO usuaaDAO = new UsuarioDAO(usuaVO);
 
-                    if (usuaaDAO.update()) {
-                        if (usuaaaVO.getIdRol().equals("1")) {
-                            request.getRequestDispatcher("admin/index.jsp").forward(request, response);
-                        } else {
-                            request.getRequestDispatcher("vendedor/ActualizarPerfilE.jsp").forward(request, response);
-                        }
+                    if (usuaaDAO.updateAdministrador()) {
+                        request.getRequestDispatcher("admin/index.jsp").forward(request, response);
                         request.setAttribute("mensajeExito", "Tus datos se modificaron correctamente");
-                    } else {
-                        if (usuaaaVO.getIdRol().equals("2")) {
-                            request.getRequestDispatcher("admin/updateUser.jsp").forward(request, response);
-                        } else {
-                            request.getRequestDispatcher("vendedor/ActualizarPerfilE.jsp").forward(request, response);
-                        }
+                    }else if(usuaaDAO.update()) {
+                        request.getRequestDispatcher("vendedor/ActualizarPerfilE.jsp").forward(request, response);
+                        request.setAttribute("mensajeExito", "Tus datos se modificaron correctamente");
+                    }
+                    else{
                         request.setAttribute("mensajeError", "Los datos no se modificaron");
                     }
-
                 } else {
                     request.setAttribute("mensajeActualzar", "Tus datos son nulos");
                     System.out.println("Los datos son nulos");
@@ -241,9 +221,9 @@ public class UsuarioControlador extends HttpServlet {
                     } else {
                         request.setAttribute("MensajeError", "El usuario NO se inactivo");
                     }
-                    if(DAO.Activar()){
+                    if (DAO.Activar()) {
                         request.setAttribute("MensajeExito", "El usuario se activo correcctamente");
-                    }else {
+                    } else {
                         request.setAttribute("MensajeError", "El usuario NO se activo");
                     }
                 } else {

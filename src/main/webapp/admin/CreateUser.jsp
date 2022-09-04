@@ -1,11 +1,11 @@
 <%@page import="vo.UsuarioVO"%>
 <body>
-    <div class="modal fade" id="signup">
+    <div class="modal fade" id="Create">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <div>
-                        <h3 class="modal-title fw-bold lead">Registrarte</h3>
+                        <h3 class="modal-title fw-bold lead">Registra un usuario</h3>
                             <span>Es f&#225;cil y r&#225;pido.</span>
                     </div>
                     <button type="button" class="text-white bg-transparent border-0" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
@@ -61,9 +61,11 @@
                                 <option value="3">Tarjeta de identidad</option>
                                 <option value="4">Pasaporte</option>
                                 <option value="5">Nit</option>
-
                             </select>
                         </div>
+                        
+                        
+                        
                         <div class="form-group mb-2">
                             <label for="num-documento">No. Documento <span class="text-danger">*</span></label>
                             <input type="text" class="form-control mt-1" name="numDocu" id="num-documento" onkeydown="validation()" required>
@@ -91,45 +93,21 @@
                                 <option value="3">Otro</option>
                             </select>
                         </div>
-                        <%
-                            HttpSession sesion = request.getSession();
-                            if (sesion.getAttribute("usuarioVo") != null) {
-                                UsuarioVO usuarioVO = (UsuarioVO) sesion.getAttribute("usuarioVo");
-                                String idRol = usuarioVO.getIdRol();
-
-                                if (idRol.equals(1)) {
-                        %>
+                        
+                        
+                        
                         <div class="form-group mb-2">
                             <label for="rol">Rol <span class="text-danger">*</span></label>
                             <select class="form-select" name="idRol" required>
                                 <option value="2">Vendedor</option>
                                 <option value="1">Administrador</option>
-                                <option value="3">Cliente</option>
                             </select>
                         </div>
-
-
-                        <div class="form-group mb-2">
-                            <label for="estado">Estado <span class="text-danger">*</span></label><%//}%>
-                            <select class="form-select" name="estado" required>
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
-                        </div>
-
-                        <%
-                                }
-
-                            }
-                        %>
-                        <!--                        <div class="formulario__mensaje" id="formuario__mensaje">
-                                                    <p><i class="fa-solid fa-triangle-exclamation"></i><b>Error</b>Por favor rellene el formulario correctamente</p>
-                                                </div>-->
+                       
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <p id="mensaje" class="d-none">Por favor sumnistre bien los campos para hacer el registro correctamente</p>
                         <button type="submit" class="btn btn-primary btn-lg">Registrarte</button>
-
                     </div>
                     <input type="hidden" value="2" name="action">
 

@@ -2,7 +2,6 @@ package dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.*;
 import util.Conexion2;
 import vo.UsuarioVO;
@@ -54,9 +53,11 @@ public class UsuarioDAO extends Conexion2 implements IUsuarioDAO {
     @Override
     public boolean insert() {
         try {
+//            String consulta = "select * usuario where email_usuario=?";
             sql = "insert into usuario(email_usuario, pass_usuario, nombre_usuario, apellido_usuario, num_documento_usuario, telefono_usuario, direccion_usuario, sexo_usuario, estado_usuario, id_rol_FK, id_tipo_doc_FK) values(?,?,?,?,?,?,?,?,?,?,?)";
-
-            conn = this.getConnection();
+//            conn = this.getConnection();
+//            stmt = conn.prepareStatement(consulta);
+//            stmt.executeQuery();
             //crear el puente, prepara lo que va a mandar
             stmt = conn.prepareStatement(sql);
             //por el puente manda los datos a insertar
@@ -102,26 +103,14 @@ public class UsuarioDAO extends Conexion2 implements IUsuarioDAO {
 
             while (rs.next()) {
                 if (rs.getString(9).equals("1")) {
-                    sexos = "Masculino";
+                    sexos = "M";
                 } else if (rs.getString(9).equals("2")) {
-                    sexos = "Femenino";
+                    sexos = "F";
                 } else if (rs.getString(9).equals("3")) {
                     sexos = "Otro";
                 } else {
                     sexos = "Sexo Desconocido";
                 }
-
-//                while (rs.next()) {
-//
-//                    if (rs.getString(11).equals("1")) {
-//                        rol = "Administrador";
-//                    } else if (rs.getString(11).equals("2")) {
-//                        rol= "Vendedor";
-//                    } else if (rs.getString(11).equals("3")) {
-//                        rol = "Cliente";
-//                    } else {
-//                        rol = "Rol desconocido";
-//                   }
 
                     UsuarioVO usuVO = new UsuarioVO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
                             rs.getString(6), rs.getString(7), rs.getString(8), sexos, rs.getBoolean(10), rs.getString(11),  rs.getString(12));
@@ -192,7 +181,7 @@ public class UsuarioDAO extends Conexion2 implements IUsuarioDAO {
             conn = this.getConnection();
             //crear el puente, prepara lo que va a mandar
             stmt = conn.prepareStatement(sql);
-            //por el puente manda los datos a insertar
+            //por el puente manda los datos a modificar
             
             stmt.setString(1, nombre);
             stmt.setString(2, apellido);
@@ -205,12 +194,8 @@ public class UsuarioDAO extends Conexion2 implements IUsuarioDAO {
             stmt.setBoolean(9, estado);
             stmt.setString(10, rol);
             stmt.setString(11, TipoDocu);
-            
             stmt.setInt(12, usuId);
-            
-
             stmt.executeUpdate();
-
             operacionExitosa = true;
 
         } catch (SQLException e) {
@@ -225,6 +210,37 @@ public class UsuarioDAO extends Conexion2 implements IUsuarioDAO {
         }
         return operacionExitosa;
     }
+    
+    public boolean updateAdministrador() {
+        UsuarioVO usuario = null;
+        try {
+            sql = "update usuario set id_rol_FK=? where id_usuario=?";
+
+            conn = this.getConnection();
+            //crear el puente, prepara lo que va a mandar
+            stmt = conn.prepareStatement(sql);
+            //por el puente manda los datos a modificar
+            stmt.setString(1, rol);
+            stmt.setInt(2, usuId);
+            stmt.executeUpdate();
+            operacionExitosa = true;
+
+        } catch (SQLException e) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, e);
+        } //
+        finally {
+            try {
+                this.close();
+            } catch (Exception e) {
+                Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return operacionExitosa;
+    }
+    
+    
+    
+    
 
     public UsuarioVO consultarNumeroDocumento(String numDocu) {
         UsuarioVO usuariovo = null;
@@ -364,5 +380,15 @@ public class UsuarioDAO extends Conexion2 implements IUsuarioDAO {
         }
 
         return usuarioVo;
+    }
+    
+    public String generarContraseña(int longitud){
+        String res = "";
+        for(int cont=1; cont<=longitud; cont++){
+            int num =(int)((Math.random()*(('Z'-'A')+1)) + 'a');
+            char letra = (char)num;
+            res =res + letra;
+        }
+    return res;
     }
 }
