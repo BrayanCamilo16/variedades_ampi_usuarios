@@ -231,8 +231,6 @@ public class UsuarioControlador extends HttpServlet {
                 }
 
                 request.getRequestDispatcher("admin/index.jsp").forward(request, response);
-                //} catch (Exception e) {
-                //}
                 break;
 
             case 6:
